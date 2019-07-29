@@ -15,7 +15,7 @@ public class DataAccesser {
     public static final String PLAYER_EXTENTION_HEART="Heart";
     public static final String PLAYER_EXTENTION_HEART_STATIC_ASFLOAT ="heart_static";
     public static final String PLAYER_EXTENTION_HEART_TEMP_ASFLOAT ="heart_temp";
-
+    public static final String TRAITS="Traits";
 
     /**从playerRoot标签中获取Heart 节点
      *
@@ -24,6 +24,16 @@ public class DataAccesser {
      */
     private static NBTTagCompound getRootHeart(NBTTagCompound root){
        return root.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getCompoundTag(PLAYER_EXTENTION).getCompoundTag(PLAYER_EXTENTION_HEART);
+    }
+
+    /**是否存在指定特性
+     *
+     * @param root
+     * @param traitName
+     * @return
+     */
+    public static boolean hasTargetTrait(NBTTagCompound root,String traitName){
+        return root.getCompoundTag(TRAITS).hasKey(traitName);
     }
 
 

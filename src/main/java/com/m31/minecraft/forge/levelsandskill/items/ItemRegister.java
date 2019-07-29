@@ -22,8 +22,6 @@ public class ItemRegister {
     public static Item halfHeart=new Heart(Optional.of(Qualitys.HEART_QUALITY_HALF))
             .setTranslationKey(TranslationUtil.getModTranslateString("half_heart"));
 
-
-
     public static void init(){
         ForgeRegistries.ITEMS.register(normalFullHeart.setRegistryName("normal_full_heart").setCreativeTab(LevelsAndSkill.levelsAndSkillTab));
         ForgeRegistries.ITEMS.register(halfHeart.setRegistryName("half_heart").setCreativeTab(LevelsAndSkill.levelsAndSkillTab));
