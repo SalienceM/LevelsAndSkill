@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "com.m31.minecraft.forge.levelsandskill",
+    "name": "LevelsAndSkill",
+    "description": "ModFor RPG Lovers",
+    "version": "1.0-snapshot",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": ["hackm"],
+    "credits": "InfStudio",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
