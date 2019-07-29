@@ -64,7 +64,6 @@ public class Heart extends ItemFood {
     @Override
     public void addInformation(ItemStack p_addInformation_1_, @Nullable World p_addInformation_2_, List<String> p_addInformation_3_, ITooltipFlag p_addInformation_4_) {
         super.addInformation(p_addInformation_1_, p_addInformation_2_, p_addInformation_3_, p_addInformation_4_);
-        NBTTagCompound itemNbt=this.getNBTShareTag(this.getDefaultInstance());
     }
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
