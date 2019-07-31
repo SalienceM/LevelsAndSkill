@@ -1,5 +1,7 @@
 package com.m31.minecraft.forge.levelsandskill.utils;
 
+import scala.actors.threadpool.Arrays;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,24 +51,28 @@ public class Splitor {
                 }
             }
             if(!skip){
-                String indexArgs=null;
+                String indexArgs=null;//result
+                List<String> indexArgsList=new ArrayList<>();
                 for(String attr:attrs){
                     if(null==indexArgs){
                         indexArgs=args[Math.toIntExact(Long.valueOf(attr))];
+                        indexArgsList.add(indexArgs);
                         continue;
                     }
                     indexArgs=String.format("%s,%s",indexArgs,args[Math.toIntExact(Long.valueOf(attr))]);
+                    indexArgsList.add(args[Math.toIntExact(Long.valueOf(attr))]);
                 }
+                boolean isNeedSkipByConflict=false;
+                if(null!=conflicts)
                 for(String single:conflicts){
                     String[] subInners=single.split(",");
-                    int flag=0;
-                    for(String sub:subInners){
-                        if (indexArgs.indexOf(sub)>-1)flag++;
-                    }
-//                    if(flag!=subInners.length){
-//                        afterFilter.add(indexArgs);
-//                    }
+                     List<String> strings=new ArrayList<>(Arrays.asList(subInners));
+                     if(indexArgsList.containsAll(strings)){
+                         isNeedSkipByConflict=true;
+                         break;
+                     }
                 }
+                if(!isNeedSkipByConflict)afterFilter.add(indexArgs);
             }
         }
         return afterFilter;
@@ -77,13 +83,14 @@ public class Splitor {
 
 
     public static void main(String[] args) {
-        int max=10;
+        int max=5;
         List<String> str=new ArrayList<>();
         for(int i=1;i<max;i++){
             str.add(i+"");
         }
         long time=System.currentTimeMillis();
-//        System.out.println(getCombies(2, str.toArray(new String[str.size()])).size());
+        String[] seq={"1,2","1,5"};
+        System.out.println(getCombies(3, str.toArray(new String[str.size()]),seq));
         System.out.println(System.currentTimeMillis()-time);
     }
 

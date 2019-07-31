@@ -111,6 +111,23 @@ public class DataAccesser {
         }
     }
 
+    /**构建特性NBT
+     *
+     * @param titleTrait
+     * @param subTrait
+     * @return
+     */
+    public static NBTTagCompound buildTargetTraitNBTTagCompound(String titleTrait,String[] subTrait){
+        NBTTagCompound nbtTagCompound=new NBTTagCompound();
+        NBTTagCompound subnbtTagCompound=new NBTTagCompound();
+        for(int i=0;i<subTrait.length;i++){
+            subnbtTagCompound.setString(i+"",subTrait[i]);
+        }
+        nbtTagCompound.setTag(titleTrait,subnbtTagCompound);
+        return nbtTagCompound;
+
+    }
+
 
     /**设定最大血量
      *

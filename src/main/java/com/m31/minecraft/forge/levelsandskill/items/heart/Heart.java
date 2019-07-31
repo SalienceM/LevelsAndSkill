@@ -1,10 +1,12 @@
 package com.m31.minecraft.forge.levelsandskill.items.heart;
 
+import com.google.gson.Gson;
 import com.m31.minecraft.forge.levelsandskill.quality.IQuality;
 import com.m31.minecraft.forge.levelsandskill.quality.Qualitys;
 import com.m31.minecraft.forge.levelsandskill.trait.ITrait;
 import com.m31.minecraft.forge.levelsandskill.trait.Traits;
 import com.m31.minecraft.forge.levelsandskill.utils.DataAccesser;
+import com.m31.minecraft.forge.levelsandskill.utils.Splitor;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,6 +22,9 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class Heart extends ItemFood {
+    public static int minTraitSize=1;
+    public static int maxTraitSize=3;
+
     public static final float BaseHealth=20f;   //默认血量为20
     public static final float BaseMinHealth=6f;   //最小血量为6，三颗星
 
@@ -64,11 +69,32 @@ public class Heart extends ItemFood {
     @Override
     public void addInformation(ItemStack p_addInformation_1_, @Nullable World p_addInformation_2_, List<String> p_addInformation_3_, ITooltipFlag p_addInformation_4_) {
         super.addInformation(p_addInformation_1_, p_addInformation_2_, p_addInformation_3_, p_addInformation_4_);
+        NBTTagCompound nbtTagCompound=p_addInformation_1_.getTagCompound().getCompoundTag("heart_modify");
+        for(String str:nbtTagCompound.getKeySet()){
+            p_addInformation_3_.add(nbtTagCompound.getString(str));
+        }
     }
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items){
     //新建一批同一id但是不同meta的物品，例如原版染料和染色羊毛
-//        if (this.isInCreativeTab(tab))
+        if (this.isInCreativeTab(tab)){
+            int index=0;
+            for(int i=minTraitSize;i<=maxTraitSize;i++){
+                List<String> traitCombies=Splitor.getCombies(i,Traits.heart_traits,Traits.heart_traits_conflict);
+                for(String traitCombie:traitCombies){
+                    ItemStack itemStackTemp=new ItemStack(this,1,index);
+                    itemStackTemp.setTagCompound(DataAccesser.buildTargetTraitNBTTagCompound("heart_modify",
+                            traitCombie.split(",")));
+                    items.add(itemStackTemp);
+                    index++;
+                }
+            }
+
+
+
+
+
+        }
 //            for (int i = 0; i < 16; ++i)
 //                items.add(new ItemStack(this,))
 //                items.add(new ItemStack(this, 1, i));
