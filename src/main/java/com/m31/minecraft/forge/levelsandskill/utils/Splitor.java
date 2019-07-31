@@ -12,7 +12,7 @@ public class Splitor {
      * @param args  当前
      * @return
      */
-    public static List<String> getCombies(int slot,String[] args){
+    public static List<String> getCombies(int slot,String[] args,String[] conflicts){
         if (null==args)return new ArrayList<>();
         //获取全排列
         List<String> list=new ArrayList<>();
@@ -57,7 +57,16 @@ public class Splitor {
                     }
                     indexArgs=String.format("%s,%s",indexArgs,args[Math.toIntExact(Long.valueOf(attr))]);
                 }
-                afterFilter.add(indexArgs);
+                for(String single:conflicts){
+                    String[] subInners=single.split(",");
+                    int flag=0;
+                    for(String sub:subInners){
+                        if (indexArgs.indexOf(sub)>-1)flag++;
+                    }
+//                    if(flag!=subInners.length){
+//                        afterFilter.add(indexArgs);
+//                    }
+                }
             }
         }
         return afterFilter;
@@ -74,7 +83,7 @@ public class Splitor {
             str.add(i+"");
         }
         long time=System.currentTimeMillis();
-        System.out.println(getCombies(2, str.toArray(new String[str.size()])).size());
+//        System.out.println(getCombies(2, str.toArray(new String[str.size()])).size());
         System.out.println(System.currentTimeMillis()-time);
     }
 
