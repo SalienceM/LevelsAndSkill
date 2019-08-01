@@ -1,0 +1,8 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "levelsandskill:item/normal_full_heart",
+    "layer1": "levelsandskill:item/normal_full_heart_nature",
+    "layer2": "levelsandskill:item/normal_full_heart_temp"
+  }
+}

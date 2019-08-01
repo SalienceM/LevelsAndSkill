@@ -1,0 +1,83 @@
+package com.m31.minecraft.forge.levelsandskill.items;
+
+import com.m31.minecraft.forge.levelsandskill.LevelsAndSkill;
+import com.m31.minecraft.forge.levelsandskill.items.heart.Heart;
+import com.m31.minecraft.forge.levelsandskill.quality.Qualitys;
+import com.m31.minecraft.forge.levelsandskill.utils.TranslationUtil;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.item.Item;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+
+
+/**物品注册器
+ *
+ */
+public class ItemRegister {
+    public static final String INVENTORY="inventory";
+    public static LinkedHashMap<String,Item> normalFullHeartMapping=new LinkedHashMap<>();
+//            new Heart(Optional.of(Qualitys.HEART_QUALITY_FULL));
+//            .setTranslationKey(TranslationUtil.getModTranslateString("heart")
+
+//    public static Item halfHeart=new Heart(Optional.of(Qualitys.HEART_QUALITY_HALF))
+//            .setTranslationKey(TranslationUtil.getModTranslateString("half_heart"));
+
+    public static void init(){
+//        ForgeRegistries.ITEMS.register(normalFullHeart.setRegistryName("normal_full_heart").setCreativeTab(LevelsAndSkill.levelsAndSkillTab));
+//        ForgeRegistries.ITEMS.register(halfHeart.setRegistryName("half_heart").setCreativeTab(LevelsAndSkill.levelsAndSkillTab));
+//        sureNormalHeartCacheItemMapping();
+//        registerItemDefineFromAllDamage(normalFullHeartMapping,"normal_full_heart");
+    }
+    public static void clientInit(){
+//        ModelLoader.setCustomModelResourceLocation(normalFullHeart,0,new ModelResourceLocation(normalFullHeart.getRegistryName(),INVENTORY));
+        sureNormalHeartCacheItemMapping();
+        registerItemModelFromAllDamage(normalFullHeartMapping,"normal_full_heart");
+
+//        ModelLoader.setCustomModelResourceLocation(halfHeart,0,new ModelResourceLocation(halfHeart.getRegistryName(),INVENTORY));
+    }
+
+
+    /**服务器注册、支持<id，item> 格式集合
+     *
+     * @param baseName
+     */
+    private static void registerItemDefineFromAllDamage(LinkedHashMap<String,Item> itemCacheMap,String baseName){
+        for(Map.Entry<String,Item> entry:itemCacheMap.entrySet()){
+            String name="0".equals(entry.getKey())?baseName:baseName+"_"+entry.getKey();
+            Item item=entry.getValue();
+            item.setRegistryName(name);
+            item.setCreativeTab(LevelsAndSkill.levelsAndSkillTab);
+            item.setTranslationKey(TranslationUtil.getModTranslateString(name));
+            ForgeRegistries.ITEMS.register(item);
+        }
+    }
+
+    /**注册本地化模型
+     *
+     * @param baseName
+     */
+    private static void registerItemModelFromAllDamage(LinkedHashMap<String,Item> itemCacheMap,String baseName){
+        for(Map.Entry<String,Item> entry:itemCacheMap.entrySet()){
+            Item item=entry.getValue();
+            ModelLoader.setCustomModelResourceLocation(item, Math.toIntExact(Long.valueOf(entry.getKey())),new ModelResourceLocation(item.getRegistryName(),INVENTORY));
+        }
+    }
+
+
+    /**缓存定义实体_NormalHeart
+     *
+     */
+    private static void sureNormalHeartCacheItemMapping(){
+        if(null!=normalFullHeartMapping&&0!=normalFullHeartMapping.size())return;
+        for(int i=0;i<Heart.combie_size+1;i++){
+            normalFullHeartMapping.put(i+"",new Heart(Optional.of(Qualitys.HEART_QUALITY_FULL)));
+        }
+    }
+
+
+}

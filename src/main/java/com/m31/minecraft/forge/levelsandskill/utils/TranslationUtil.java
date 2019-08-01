@@ -7,4 +7,8 @@ public class TranslationUtil {
     public static String getModTranslateString(String name){
         return LevelsAndSkill.MOD_ID+"."+name;
     }
+    public static String getModTranslateTraitsString(String name){
+        return LevelsAndSkill.MOD_ID+".traits."+name;
+    }
+
 }

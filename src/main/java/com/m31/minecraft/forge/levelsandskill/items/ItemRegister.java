@@ -19,17 +19,16 @@ public class ItemRegister {
     public static final String INVENTORY="inventory";
     public static Item normalFullHeart=new Heart(Optional.of(Qualitys.HEART_QUALITY_FULL))
             .setTranslationKey(TranslationUtil.getModTranslateString("heart"));
-//    public static Item halfHeart=new Heart(Optional.of(Qualitys.HEART_QUALITY_HALF))
-//            .setTranslationKey(TranslationUtil.getModTranslateString("half_heart"));
 
     public static void init(){
         ForgeRegistries.ITEMS.register(normalFullHeart.setRegistryName("normal_full_heart").setCreativeTab(LevelsAndSkill.levelsAndSkillTab));
-//        ForgeRegistries.ITEMS.register(halfHeart.setRegistryName("half_heart").setCreativeTab(LevelsAndSkill.levelsAndSkillTab));
 
     }
     public static void clientInit(){
-        ModelLoader.setCustomModelResourceLocation(normalFullHeart,0,new ModelResourceLocation(normalFullHeart.getRegistryName(),INVENTORY));
-//        ModelLoader.setCustomModelResourceLocation(halfHeart,0,new ModelResourceLocation(halfHeart.getRegistryName(),INVENTORY));
+        //HEART regiser
+        for(int i=0;i<Heart.combie_size+1;i++){
+            ModelLoader.setCustomModelResourceLocation(normalFullHeart,i,new ModelResourceLocation(normalFullHeart.getRegistryName()+"_"+i,INVENTORY));
+        }
     }
 
 

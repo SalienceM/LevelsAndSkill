@@ -1,2 +1,6 @@
 item.levelsandskill.heart.name=红心(完整)
 item.levelsandskill.half_heart.name=红心(一半)
+levelsandskill.traits.heart_traits_shining=闪耀
+levelsandskill.traits.heart_traits_rotten=腐朽
+levelsandskill.traits.heart_traits_nature=自然
+levelsandskill.traits.heart_traits_temp=脆弱
