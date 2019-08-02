@@ -125,8 +125,30 @@ public class DataAccesser {
         }
         nbtTagCompound.setTag(titleTrait,subnbtTagCompound);
         return nbtTagCompound;
-
     }
+
+
+    /**判断是否存在子特性
+     *
+     * @param targetNBTTagCompound
+     * @param titleTrait
+     * @param inner
+     * @return
+     */
+    public static boolean ifHasSubTargetTraitNBTTagCompound(NBTTagCompound targetNBTTagCompound, String titleTrait,String inner){
+
+        if(null==targetNBTTagCompound)return false;
+        NBTTagCompound targetSub=targetNBTTagCompound.getCompoundTag(titleTrait);
+        if(targetSub.isEmpty())return false;
+        for(int i=0;i<targetSub.getSize();i++){
+            String target=targetSub.getString(i+"");
+            if(target.equals(inner))return true;
+        }
+        return false;
+    }
+
+
+
 
 
     /**设定最大血量

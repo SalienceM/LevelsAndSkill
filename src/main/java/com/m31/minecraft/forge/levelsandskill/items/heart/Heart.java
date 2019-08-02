@@ -74,8 +74,9 @@ public class Heart extends ItemFood {
             if(!p_onFoodEaten_2_.isRemote) {
                 entityPlayerMP.sendMessage(new TextComponentString("well done fresh meat!!!"));
                 //血量提高
+                boolean ifWeek=DataAccesser.ifHasSubTargetTraitNBTTagCompound(p_onFoodEaten_1_.getTagCompound(),"heart_modify",Traits.HEART_TRAITS_TEMP);
                 DataAccesser.incrPlayerMaxHealth(entityPlayerMP.getEntityData(),addValue,
-                        heartTraits.contains(Optional.of(Traits.HEART_TRAITS_TEMP))?true:false
+                        ifWeek?true:false
                         );
                 //设置最大血量
                 DataAccesser.setMaxHealth(entityPlayerMP,DataAccesser.getPlayerMaxHealth(entityPlayerMP.getEntityData()));
