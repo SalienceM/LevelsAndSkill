@@ -1,7 +1,7 @@
 package com.m31.minecraft.forge.levelsandskill.items.skills;
 
 import com.m31.minecraft.forge.levelsandskill.LevelsAndSkill;
-import com.m31.minecraft.forge.levelsandskill.container.LevelsGuiLoader;
+import com.m31.minecraft.forge.levelsandskill.gui.container.LevelsGuiLoader;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

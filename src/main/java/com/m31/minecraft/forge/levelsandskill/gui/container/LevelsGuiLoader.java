@@ -1,4 +1,4 @@
-package com.m31.minecraft.forge.levelsandskill.container;
+package com.m31.minecraft.forge.levelsandskill.gui.container;
 
 import com.m31.minecraft.forge.levelsandskill.LevelsAndSkill;
 import net.minecraft.entity.player.EntityPlayer;

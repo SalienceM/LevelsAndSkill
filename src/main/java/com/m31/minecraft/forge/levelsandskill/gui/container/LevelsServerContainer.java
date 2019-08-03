@@ -1,9 +1,7 @@
-package com.m31.minecraft.forge.levelsandskill.container;
+package com.m31.minecraft.forge.levelsandskill.gui.container;
 
 import com.m31.minecraft.forge.levelsandskill.items.ItemRegister;
-import com.m31.minecraft.forge.levelsandskill.items.skills.SkillBook;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
