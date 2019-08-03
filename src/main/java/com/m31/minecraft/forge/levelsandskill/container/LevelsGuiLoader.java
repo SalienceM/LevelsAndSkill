@@ -24,7 +24,7 @@ public class LevelsGuiLoader implements IGuiHandler {
     public Object getServerGuiElement(int i, EntityPlayer entityPlayer, World world, int i1, int i2, int i3) {
         switch (i){
             case GUI:
-                return new LevelsServerContainer();
+                return new LevelsServerContainer(entityPlayer);
             default:
                 return null;
         }
@@ -35,7 +35,7 @@ public class LevelsGuiLoader implements IGuiHandler {
     public Object getClientGuiElement(int i, EntityPlayer entityPlayer, World world, int i1, int i2, int i3) {
         switch (i){
             case GUI:
-                return new LevelsClientContainer(new LevelsServerContainer());
+                return new LevelsClientContainer(new LevelsServerContainer(entityPlayer));
             default:
                 return null;
         }
