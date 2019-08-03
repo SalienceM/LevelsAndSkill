@@ -1,5 +1,6 @@
 package com.m31.minecraft.forge.levelsandskill.proxy;
 
+import com.m31.minecraft.forge.levelsandskill.container.LevelsGuiLoader;
 import com.m31.minecraft.forge.levelsandskill.items.ItemRegister;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -17,9 +18,10 @@ public class CommonProxy {
     }
     public void init(FMLInitializationEvent event)
     {
+        new LevelsGuiLoader();
         logger.info("doing CommonProxy Init\n");
-    }
 
+    }
 
 
 
