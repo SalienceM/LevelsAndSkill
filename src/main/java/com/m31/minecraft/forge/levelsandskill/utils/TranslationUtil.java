@@ -10,5 +10,8 @@ public class TranslationUtil {
     public static String getModTranslateTraitsString(String name){
         return LevelsAndSkill.MOD_ID+".traits."+name;
     }
+    public static String getModTranslateKeyBindString(String name){
+        return LevelsAndSkill.MOD_ID+".keybind."+name;
+    }
 
 }

@@ -25,13 +25,13 @@ public class LevelSideButton extends GuiButton {
 //        if(curr instanceof GuiContainerCreative&& )
         if(enabled){
             GlStateManager.color(1f,1f,1f);
-            minecraft.renderEngine.bindTexture();
+//            minecraft.renderEngine.bindTexture();
 
 
 
         }
 
 
-        super.drawButton(p_drawButton_1_, p_drawButton_2_, p_drawButton_3_, p_drawButton_4_);
+//        super.drawButton(p_drawButton_1_, p_drawButton_2_, p_drawButton_3_, p_drawButton_4_);
     }
 }

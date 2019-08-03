@@ -5,3 +5,7 @@ levelsandskill.traits.heart_traits_rotten=腐朽
 levelsandskill.traits.heart_traits_nature=自然
 levelsandskill.traits.heart_traits_temp=脆弱
 item.levelsandskill.skill_book.name=技能书
+
+levelsandskill.keybind.levels_gui=属性界面
+levelsandskill.keybind.title=冒险之旅
+
