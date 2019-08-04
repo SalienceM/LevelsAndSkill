@@ -7,6 +7,8 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
@@ -15,13 +17,13 @@ public class LevelsGui extends GuiScreen {
     static final String path= LevelsAndSkill.MOD_ID+":textures/gui/gui_skill.png";
     static final ResourceLocation texture=new ResourceLocation(path);
     private GuiScreen parent;
-    private EntityPlayerSP entityPlayerSP;
+    private EntityPlayerMP entityPlayerMp;
 
     private GuiButton btnClose;
 
-    public LevelsGui(GuiScreen parent, EntityPlayerSP entityPlayerSP){
+    public LevelsGui(GuiScreen parent, EntityPlayerMP entityPlayer){
         this.parent=parent;
-        this.entityPlayerSP=entityPlayerSP;
+        this.entityPlayerMp=entityPlayer;
     }
     @Override
     public void initGui() {
@@ -35,7 +37,7 @@ public class LevelsGui extends GuiScreen {
         GlStateManager.color(1f,1f,1f);
         this.mc.getTextureManager().bindTexture(texture);
         this.drawTexturedModalRect((width / 2)-128,5,0,0,256,256);
-        String maxHealth =DataAccesser.getPlayerMaxHealth(entityPlayerSP.getEntityData())+"";
+        String maxHealth =DataAccesser.getPlayerMaxHealth(entityPlayerMp.getEntityData())+"";
         this.drawCenteredString(this.mc.fontRenderer,"max health:"+maxHealth,width / 2,height/10,0XFFFFFF);
     }
 

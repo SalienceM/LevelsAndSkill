@@ -4,25 +4,42 @@ import com.m31.minecraft.forge.levelsandskill.LevelsAndSkill;
 import com.m31.minecraft.forge.levelsandskill.gui.LevelsGui;
 import com.m31.minecraft.forge.levelsandskill.gui.SimpleGui;
 import com.m31.minecraft.forge.levelsandskill.items.ItemRegister;
+import com.m31.minecraft.forge.levelsandskill.items.skills.SkillBook;
 import com.m31.minecraft.forge.levelsandskill.utils.TranslationUtil;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.item.ItemTool;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.client.GuiIngameForge;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.event.entity.item.ItemEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.items.ItemHandlerHelper;
 import org.lwjgl.input.Keyboard;
 
+import javax.swing.plaf.basic.BasicComboBoxUI;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -31,10 +48,16 @@ public class ClientProxy extends CommonProxy{
 //    static final String path= LevelsAndSkill.MOD_ID+":textures/gui/gui_skill.png";
     static final ResourceLocation gui_texture=new ResourceLocation(path);
     private GuiButton exampleBtn =new GuiButton(233,0,0,"T");
+    private GuiButton levelsBtn =new GuiButton(234,0,0,"Levels");
     public static final KeyBinding levelsguiKeyBind=
             new KeyBinding(TranslationUtil.getModTranslateKeyBindString("levels_gui"),
                     Keyboard.KEY_L,TranslationUtil.getModTranslateKeyBindString("title"));
-    private ExecutorService executorService= Executors.newFixedThreadPool(10);
+    static FakePlayer fakePlayer;
+
+
+    public EntityPlayer getClientPlayer() {
+        return Minecraft.getMinecraft().player;
+    }
 
 
 
@@ -61,18 +84,16 @@ public class ClientProxy extends CommonProxy{
 //        if(event.getGui() instanceof GuiInventory)
         if(event.getGui() instanceof GuiMainMenu){
             GuiScreen screen=event.getGui();
-//            for(GuiButton btn:event.getButtonList()){
-//                if(4==btn.id){
-//                    btn.x= (int) (screen.width*0.75);
-//                }else if(0==btn.id){
-//                    btn.y= (int) (screen.height*.7);
-//                    btn.x= (int) (screen.width*.75);
-//                }
-//            }
             exampleBtn.x= 0;
             exampleBtn.y= 0;
             exampleBtn.width=20;
             event.getButtonList().add(exampleBtn);
+        }else if(event.getGui() instanceof GuiInventory){
+            GuiScreen screen=event.getGui();
+            levelsBtn.x= event.getGui().width/2-20;
+            levelsBtn.y= event.getGui().height/10;
+            levelsBtn.width=40;
+            event.getButtonList().add(levelsBtn);
         }
     }
 
@@ -82,6 +103,9 @@ public class ClientProxy extends CommonProxy{
         if(exampleBtn ==event.getButton()){
             Minecraft mc=Minecraft.getMinecraft();
             mc.displayGuiScreen(new SimpleGui(mc.currentScreen));
+        }else if (levelsBtn==event.getButton()){
+            Minecraft mc=Minecraft.getMinecraft();
+//            mc.displayGuiScreen(event.getGui().mc.play);
         }
     }
 
@@ -89,8 +113,17 @@ public class ClientProxy extends CommonProxy{
     @SubscribeEvent
     public void keyListener(InputEvent.KeyInputEvent event){
         if(levelsguiKeyBind.isPressed()){
+//            WorldServer worldServer = DimensionManager.getWorld(0); // default world
+//            GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "FakePlayer");
+//            FakePlayer fakePlayer = new FakePlayer(worldServer, gameProfile);
+            //注册虚假player
+            registerFakePlayer();
+            MinecraftServer minecraftServer = fakePlayer.server;
             Minecraft mc=Minecraft.getMinecraft();
-            mc.displayGuiScreen(new LevelsGui(mc.currentScreen,mc.player));
+            if(mc.world.isRemote){
+                EntityPlayerMP entityPlayerMP=minecraftServer.getPlayerList().getPlayerByUsername(mc.player.connection.getGameProfile().getName());
+                mc.displayGuiScreen(new LevelsGui(mc.currentScreen,entityPlayerMP));
+            }
         }
     }
 
@@ -137,6 +170,13 @@ public class ClientProxy extends CommonProxy{
     }
 
 
+    private void registerFakePlayer(){
+        if (null==fakePlayer){
+            WorldServer worldServer = DimensionManager.getWorld(0); // default world
+            GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "FakePlayer");
+            fakePlayer = new FakePlayer(worldServer, gameProfile);
+        }
+    }
 
 
 }
