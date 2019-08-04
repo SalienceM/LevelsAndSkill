@@ -17,20 +17,26 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.input.Keyboard;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class ClientProxy extends CommonProxy{
     static final String path= LevelsAndSkill.MOD_ID+":textures/gui/gui_data.png";
+//    static final String path= LevelsAndSkill.MOD_ID+":textures/gui/gui_skill.png";
     static final ResourceLocation gui_texture=new ResourceLocation(path);
     private GuiButton exampleBtn =new GuiButton(233,0,0,"T");
     public static final KeyBinding levelsguiKeyBind=
             new KeyBinding(TranslationUtil.getModTranslateKeyBindString("levels_gui"),
                     Keyboard.KEY_L,TranslationUtil.getModTranslateKeyBindString("title"));
+    private ExecutorService executorService= Executors.newFixedThreadPool(10);
+
+
 
     public void preInit(FMLPreInitializationEvent event)
     {
@@ -84,32 +90,49 @@ public class ClientProxy extends CommonProxy{
     public void keyListener(InputEvent.KeyInputEvent event){
         if(levelsguiKeyBind.isPressed()){
             Minecraft mc=Minecraft.getMinecraft();
-            mc.displayGuiScreen(new LevelsGui(mc.currentScreen));
+            mc.displayGuiScreen(new LevelsGui(mc.currentScreen,mc.player));
         }
     }
 
-    //监听玩家血条渲染
+//    监听玩家血条渲染
     @SubscribeEvent
     public void playerHealthRender(RenderGameOverlayEvent.Pre event){
-        if(event.getType()== RenderGameOverlayEvent.ElementType.HEALTH){
-            event.setCanceled(true);//组织原有渲染
-            int width=event.getResolution().getScaledWidth();
-            int height=event.getResolution().getScaledHeight();
-            Minecraft mc=Minecraft.getMinecraft();
-            int currenthp=MathHelper.ceil(mc.player.getHealth());
-            int maxhp=MathHelper.ceil(mc.player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getAttributeValue());
-//            String hp = String.format("Health: %d/%d",currenthp,maxhp);
-            if(null!=mc.currentScreen){
-                GlStateManager.color(1f,1f,1f);
-                mc.renderEngine.bindTexture(gui_texture);
-//            mc.render
-                mc.currentScreen.drawTexturedModalRect(5,5,
-                        0,0,64,8);
-            }
-//                        FontRenderer fontRenderer = mc.fontRenderer;
-//            fontRenderer.drawStringWithShadow(hp, width / 2 - 91, height - GuiIngameForge.left_height, 0xFFFFFF);
-//            //字体渲染器在渲染时会重新绑定到字型纹理上,由于一些"编程失误",HUD在下一步绘制时不会重新绑定纹理,因此需要我们在此手动绑定.
-//            mc.renderEngine.bindTexture(Gui.ICONS);
+        if(event.getType()==RenderGameOverlayEvent.ElementType.FOOD){
+            Minecraft.getMinecraft().renderEngine.bindTexture(Gui.ICONS);
+            return;
+        } else if(event.getType()== RenderGameOverlayEvent.ElementType.HEALTH){
+                                event.setCanceled(true);//组织原有渲染
+                    int width=event.getResolution().getScaledWidth();
+                    int height=event.getResolution().getScaledHeight();
+                    int currenthp=MathHelper.ceil(Minecraft.getMinecraft().player.getHealth());
+                    int maxhp=MathHelper.ceil(Minecraft.getMinecraft().player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getAttributeValue());
+                        GlStateManager.color(1f,1f,1f);
+                        Minecraft.getMinecraft().getTextureManager().bindTexture(gui_texture);
+                        //绘制血量
+//                         血量百分比
+                        float hpper=(float) currenthp/maxhp;
+                        int hplength=MathHelper.ceil(92*hpper);
+                        //不同百分比展示不同贴图
+                        if(hpper>=0.75){
+                            Minecraft.getMinecraft().ingameGUI.drawTexturedModalRect(width/2-92,height - GuiIngameForge.left_height-10,
+                                    0,8,hplength,8);
+                        }else if(hpper>=0.5){
+                            Minecraft.getMinecraft().ingameGUI.drawTexturedModalRect(width/2-92,height - GuiIngameForge.left_height-10,
+                                    0,16,hplength,8);
+                        }else if(hpper>=0.25){
+                            Minecraft.getMinecraft().ingameGUI.drawTexturedModalRect(width/2-92,height - GuiIngameForge.left_height-10,
+                                    0,24,hplength,8);
+                        }else { //<=0.25
+                            Minecraft.getMinecraft().ingameGUI.drawTexturedModalRect(width/2-92,height - GuiIngameForge.left_height-10,
+                                    0,32,hplength,8);
+                        }
+
+                        Minecraft.getMinecraft().ingameGUI.drawTexturedModalRect(width/2-92,height - GuiIngameForge.left_height-10,
+                                0,0,92,8);
+                        String hp = "Health: "+MathHelper.ceil(hpper*100)+"% "+String.format("%d/%d",currenthp,maxhp);
+                        FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+                        fontRenderer.drawStringWithShadow(hp, width / 2 - 91, height - GuiIngameForge.left_height-20, 0xFFFFFF);
+            Minecraft.getMinecraft().renderEngine.bindTexture(Gui.ICONS);
         }
     }
 
