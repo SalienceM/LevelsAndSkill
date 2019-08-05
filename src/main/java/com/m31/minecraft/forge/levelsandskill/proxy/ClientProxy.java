@@ -105,7 +105,6 @@ public class ClientProxy extends CommonProxy{
             mc.displayGuiScreen(new SimpleGui(mc.currentScreen));
         }else if (levelsBtn==event.getButton()){
             Minecraft mc=Minecraft.getMinecraft();
-//            mc.displayGuiScreen(event.getGui().mc.play);
         }
     }
 
@@ -113,9 +112,6 @@ public class ClientProxy extends CommonProxy{
     @SubscribeEvent
     public void keyListener(InputEvent.KeyInputEvent event){
         if(levelsguiKeyBind.isPressed()){
-//            WorldServer worldServer = DimensionManager.getWorld(0); // default world
-//            GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "FakePlayer");
-//            FakePlayer fakePlayer = new FakePlayer(worldServer, gameProfile);
             //注册虚假player
             registerFakePlayer();
             MinecraftServer minecraftServer = fakePlayer.server;
