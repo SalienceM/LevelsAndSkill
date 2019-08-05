@@ -8,4 +8,6 @@ item.levelsandskill.skill_book.name=技能书
 
 levelsandskill.keybind.levels_gui=属性界面
 levelsandskill.keybind.title=冒险之旅
-
+levelsandskill.attr.user_name=§l名称
+levelsandskill.attr.user_max_health=§l最大血量
+levelsandskill.attr.user_curr_health=§l当前血量
