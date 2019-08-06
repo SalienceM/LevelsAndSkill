@@ -11,3 +11,7 @@ levelsandskill.keybind.title=冒险之旅
 levelsandskill.attr.user_name=§l名称
 levelsandskill.attr.user_max_health=§l最大血量
 levelsandskill.attr.user_curr_health=§l当前血量
+levelsandskill.attr.user_temp_health=§l临时血量
+levelsandskill.attr.user_health_revert_speed=§l回血速度
+levelsandskill.attr.user_attr_strength=§l臂力
+

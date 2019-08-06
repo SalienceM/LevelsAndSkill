@@ -1,20 +1,33 @@
 package com.m31.minecraft.forge.levelsandskill.utils;
 
 import com.google.gson.Gson;
+import com.m31.minecraft.forge.levelsandskill.LevelsAndSkill;
 import com.m31.minecraft.forge.levelsandskill.events.PlayerEventBus;
+import com.m31.minecraft.forge.levelsandskill.items.Body;
 import com.m31.minecraft.forge.levelsandskill.items.heart.Heart;
+import com.m31.minecraft.forge.levelsandskill.proxy.ClientProxy;
+import com.m31.minecraft.forge.levelsandskill.proxy.CommonProxy;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
+
+import java.util.Optional;
 
 public class DataAccesser {
     public static final String PLAYER_EXTENTION="LevelsAndSkill";
     public static final String PLAYER_EXTENTION_HEART="Heart";
+    public static final String PLAYER_EXTENTION_ATTRIBUTE="Attribute";
     public static final String PLAYER_EXTENTION_HEART_STATIC_ASFLOAT ="heart_static";
     public static final String PLAYER_EXTENTION_HEART_TEMP_ASFLOAT ="heart_temp";
+    public static final String PLAYER_EXTENTION_HEART_REVERT_SPEED_ASFLOAT ="heart_revert_speed";
+    public static final String PLAYER_EXTENTION_ATTR_STRENGTH_ASFLOAT ="attr_strength";
+
     public static final String TRAITS="Traits";
 
     /**从playerRoot标签中获取Heart 节点
@@ -24,6 +37,15 @@ public class DataAccesser {
      */
     private static NBTTagCompound getRootHeart(NBTTagCompound root){
        return root.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getCompoundTag(PLAYER_EXTENTION).getCompoundTag(PLAYER_EXTENTION_HEART);
+    }
+
+    /**从playerRoot标签中获取Attibute 节点
+     *
+     * @param root
+     * @return
+     */
+    private static NBTTagCompound getRootAttribute(NBTTagCompound root){
+        return root.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getCompoundTag(PLAYER_EXTENTION).getCompoundTag(PLAYER_EXTENTION_ATTRIBUTE);
     }
 
     /**是否存在指定特性
@@ -62,6 +84,36 @@ public class DataAccesser {
         if(full<=Heart.BaseMinHealth)full=Heart.BaseMinHealth;
         return full;
     }
+
+
+    /**获取当前临时血量有效值
+     * =temp
+     *
+     * @param playerNbtTagCompound
+     * @return
+     */
+    public static float getPlayerTempHealth(NBTTagCompound playerNbtTagCompound){
+        NBTTagCompound nbtTagCompoundPlayerHeart=getRootHeart(playerNbtTagCompound);
+        if (nbtTagCompoundPlayerHeart.isEmpty())return Heart.BaseTempHealth;
+        //calculate
+        float tempHealth=nbtTagCompoundPlayerHeart.getFloat(PLAYER_EXTENTION_HEART_TEMP_ASFLOAT);
+        return tempHealth;
+    }
+
+    /**获取当前临时血量有效值
+     * =heart revert speed
+     *
+     * @param playerNbtTagCompound
+     * @return
+     */
+    public static float getPlayerHealthRevertSpeed(NBTTagCompound playerNbtTagCompound){
+        NBTTagCompound nbtTagCompoundPlayerHeart=getRootHeart(playerNbtTagCompound);
+        if (nbtTagCompoundPlayerHeart.isEmpty())return Heart.BaseHealthRevertSpeed;
+        //calculate
+        float revertHealthSpeed=nbtTagCompoundPlayerHeart.getFloat(PLAYER_EXTENTION_HEART_REVERT_SPEED_ASFLOAT);
+        return revertHealthSpeed;
+    }
+
 
     public static float getPlayerMaxHealthRespawn(NBTTagCompound playerNbtTagCompound) {
         clearTempHealth(playerNbtTagCompound);
@@ -163,4 +215,38 @@ public class DataAccesser {
 //        }
     }
 
+    /**获取服务器玩家信息
+     *
+     * @param entityPlayer
+     * @return
+     */
+    public static Optional<EntityPlayerMP> getPlayerMpFromEntityPlayer(EntityPlayer entityPlayer,boolean onlyNeedFromServer){
+        if(entityPlayer instanceof EntityPlayerMP){
+            return Optional.of((EntityPlayerMP) entityPlayer);
+        }else if(entityPlayer instanceof EntityPlayerSP){
+            if(onlyNeedFromServer)return Optional.empty();
+            Minecraft mc=Minecraft.getMinecraft();
+            if(mc.world.isRemote){
+                LevelsAndSkill.proxy.registerFakePlayer();
+                MinecraftServer minecraftServer = ClientProxy.fakePlayer.server;
+                EntityPlayerMP entityPlayerMP=minecraftServer.getPlayerList().getPlayerByUsername(mc.player.connection.getGameProfile().getName());
+                return Optional.of(entityPlayerMP);
+            }
+        }else{}
+        return Optional.empty();
+    }
+    //======================================================
+    /**获取当前最大血量有效值
+     * =base+static+temp
+     *
+     * @param playerNbtTagCompound
+     * @return
+     */
+    public static float getPlayerStength(NBTTagCompound playerNbtTagCompound){
+        NBTTagCompound nbtTagCompoundPlayerHeart=getRootAttribute(playerNbtTagCompound);
+        if (nbtTagCompoundPlayerHeart.isEmpty())return Body.ATTR_STRENGTH_DEFAULT;
+        //calculate
+        float strength=nbtTagCompoundPlayerHeart.getFloat(PLAYER_EXTENTION_ATTR_STRENGTH_ASFLOAT);
+        return strength;
+    }
 }

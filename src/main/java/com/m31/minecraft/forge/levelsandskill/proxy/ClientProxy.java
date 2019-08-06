@@ -35,13 +35,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.items.ItemHandlerHelper;
 import org.lwjgl.input.Keyboard;
-
-import javax.swing.plaf.basic.BasicComboBoxUI;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class ClientProxy extends CommonProxy{
     static final String path= LevelsAndSkill.MOD_ID+":textures/gui/gui_data.png";
@@ -52,7 +47,7 @@ public class ClientProxy extends CommonProxy{
     public static final KeyBinding levelsguiKeyBind=
             new KeyBinding(TranslationUtil.getModTranslateKeyBindString("levels_gui"),
                     Keyboard.KEY_L,TranslationUtil.getModTranslateKeyBindString("title"));
-    static FakePlayer fakePlayer;
+    public static FakePlayer fakePlayer;
 
 
     public EntityPlayer getClientPlayer() {
@@ -166,11 +161,15 @@ public class ClientProxy extends CommonProxy{
     }
 
 
-    private void registerFakePlayer(){
+    public void registerFakePlayer(){
         if (null==fakePlayer){
+        try{
             WorldServer worldServer = DimensionManager.getWorld(0); // default world
             GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "FakePlayer");
             fakePlayer = new FakePlayer(worldServer, gameProfile);
+        }catch (Exception e){
+            logger.error(e);
+        }
         }
     }
 

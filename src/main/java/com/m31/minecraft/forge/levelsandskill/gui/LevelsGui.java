@@ -15,6 +15,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 public class LevelsGui extends GuiScreen {
 
@@ -27,6 +28,10 @@ public class LevelsGui extends GuiScreen {
     static final String USERNAME="user_name";
     static final String MAXHEALTH="user_max_health";
     static final String CURRENTHEALTH="user_curr_health";
+    static final String TEMPHEALTH="user_temp_health";
+    static final String RVTHEALTHSPEED="user_health_revert_speed";
+    static final String ATTR_STRENGTH="user_attr_strength";
+
 
 
     static final String path= LevelsAndSkill.MOD_ID+":textures/gui/gui_skill.png";
@@ -58,6 +63,16 @@ public class LevelsGui extends GuiScreen {
         getMaxHealthNumLable().drawLabel(this.mc,0,0);
         getCurrHealthLable().drawLabel(this.mc,0,0);
         getCurrHealthNumLable().drawLabel(this.mc,0,0);
+        getTempHealthLable().drawLabel(this.mc,0,0);
+        getTempHealthNumLable().drawLabel(this.mc,0,0);
+        getRevertHealthLable().drawLabel(this.mc,0,0);
+        getRevertHealthNumLable().drawLabel(this.mc,0,0);
+        //21\5
+        getAttrStrengthLable().drawLabel(this.mc,0,0);
+        getAttrStrengthNumLable().drawLabel(this.mc,0,0);
+
+        //button
+//        new GuiButton().drawButton();
 
     }
 
@@ -90,7 +105,7 @@ public class LevelsGui extends GuiScreen {
         return target;
     }
     private GuiLabel getMaxHealthNumLable(){
-        int maxhp=MathHelper.ceil(Minecraft.getMinecraft().player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getAttributeValue());
+        float maxhp=new BigDecimal( DataAccesser.getPlayerMaxHealth(entityPlayerMp.getEntityData())).setScale(1,BigDecimal.ROUND_FLOOR).floatValue();
         GuiLabel target=new GuiLabel(fontRenderer,1,getVeryStartX()+(getPicWidth()/32)*7,getVeryStartY()+((getPicHeight()/32)*10)-3,
                 getPicWidth()/16,getPicHeight()/32,0XFFFFFF);
         target.addLine("§l"+maxhp);
@@ -103,10 +118,52 @@ public class LevelsGui extends GuiScreen {
         return target;
     }
     private GuiLabel getCurrHealthNumLable(){
-        int currenthp= MathHelper.ceil(Minecraft.getMinecraft().player.getHealth());
+        float currenthp=new BigDecimal( entityPlayerMp.getHealth()).setScale(1,BigDecimal.ROUND_FLOOR).floatValue();
         GuiLabel target=new GuiLabel(fontRenderer,1,getVeryStartX()+(getPicWidth()/32)*7,getVeryStartY()+((getPicHeight()/32)*11)-1,
                 getPicWidth()/16,getPicHeight()/32,0XFFFFFF);
         target.addLine("§l"+currenthp);
+        return target;
+    }
+    //=====================================临时血量
+    private GuiLabel getTempHealthLable(){
+        GuiLabel target=new GuiLabel(fontRenderer,1,getVeryStartX()+getPicWidth()/32,getVeryStartY()+((getPicHeight()/32)*12)+1,
+                getPicWidth()/16,getPicHeight()/32,0XFFFFFF);
+        target.addLine(TranslationUtil.getFullModTranslateAttrName(TEMPHEALTH)+":");
+        return target;
+    }
+    private GuiLabel getTempHealthNumLable(){
+        float tempHealth= new BigDecimal(DataAccesser.getPlayerTempHealth(this.entityPlayerMp.getEntityData())).setScale(1,BigDecimal.ROUND_FLOOR).floatValue();
+        GuiLabel target=new GuiLabel(fontRenderer,1,getVeryStartX()+(getPicWidth()/32)*7,getVeryStartY()+((getPicHeight()/32)*12)+1,
+                getPicWidth()/16,getPicHeight()/32,0XFFFFFF);
+        target.addLine("§l"+tempHealth);
+        return target;
+    }
+    //=====================================秒回
+    private GuiLabel getRevertHealthLable(){
+        GuiLabel target=new GuiLabel(fontRenderer,1,getVeryStartX()+getPicWidth()/32,getVeryStartY()+((getPicHeight()/32)*13)+3,
+                getPicWidth()/16,getPicHeight()/32,0XFFFFFF);
+        target.addLine(TranslationUtil.getFullModTranslateAttrName(RVTHEALTHSPEED)+":");
+        return target;
+    }
+    private GuiLabel getRevertHealthNumLable(){
+        float revertSpeed= DataAccesser.getPlayerHealthRevertSpeed(this.entityPlayerMp.getEntityData());
+        GuiLabel target=new GuiLabel(fontRenderer,1,getVeryStartX()+(getPicWidth()/32)*7,getVeryStartY()+((getPicHeight()/32)*13)+3,
+                getPicWidth()/16,getPicHeight()/32,0XFFFFFF);
+        target.addLine("§l"+revertSpeed);
+        return target;
+    }
+    //strength=================================================
+    private GuiLabel getAttrStrengthLable(){
+        GuiLabel target=new GuiLabel(fontRenderer,1,getVeryStartX()+(getPicWidth()/32)*22-2,getVeryStartY()+((getPicHeight()/32)*4-4),
+                getPicWidth()/16,getPicHeight()/32,0XFFFFFF);
+        target.addLine(TranslationUtil.getFullModTranslateAttrName(ATTR_STRENGTH)+":");
+        return target;
+    }
+    private GuiLabel getAttrStrengthNumLable(){
+        float strengh=DataAccesser.getPlayerStength(this.entityPlayerMp.getEntityData());
+        GuiLabel target=new GuiLabel(fontRenderer,1,getVeryStartX()+(getPicWidth()/32)*25-2,getVeryStartY()+((getPicHeight()/32)*4-4),
+                getPicWidth()/16,getPicHeight()/32,0XFFFFFF);
+        target.addLine("§l"+strengh);
         return target;
     }
 

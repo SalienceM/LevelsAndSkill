@@ -46,6 +46,8 @@ public class Heart extends ItemFood {
         logger.info("all Heart Combies calculate done. size {}",combie_size);
     }
     public static final float BaseHealth=20f;   //默认血量为20
+    public static final float BaseHealthRevertSpeed=0f;   //默认血量为20
+    public static final float BaseTempHealth=0f;   //默认血量为20
     public static final float BaseMinHealth=6f;   //最小血量为6，三颗星
 
     private Optional<String> heartQuality;
