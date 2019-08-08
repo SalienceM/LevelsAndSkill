@@ -14,4 +14,5 @@ levelsandskill.attr.user_curr_health=§l当前血量
 levelsandskill.attr.user_temp_health=§l临时血量
 levelsandskill.attr.user_health_revert_speed=§l回血速度
 levelsandskill.attr.user_attr_strength=§l臂力
+levelsandskill.attr.user_level_up=§l潜力点
 

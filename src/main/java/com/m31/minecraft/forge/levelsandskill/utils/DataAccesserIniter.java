@@ -55,6 +55,18 @@ public class DataAccesserIniter {
             }
         }
     }
+    private static void initLevelsAndSkillsPlayerExtentionsRootLevel(NBTTagCompound playerNbtTagCompound){
+        if(playerNbtTagCompound.getCompoundTag(DataAccesser.PLAYER_EXTENTION_LEVEL).isEmpty()){
+            NBTTagCompound nbtTagCompoundPlayerHeartBuild=new NBTTagCompound();
+            //LEVEL POINT
+            nbtTagCompoundPlayerHeartBuild.setInteger(DataAccesser.PLAYER_EXTENTION_LEVEL_POINT_ASINT, Body.LEVELPOINT_DEFAULT);
+            playerNbtTagCompound.setTag(DataAccesser.PLAYER_EXTENTION_LEVEL,nbtTagCompoundPlayerHeartBuild);
+        }else{
+            if(!playerNbtTagCompound.getCompoundTag(DataAccesser.PLAYER_EXTENTION_LEVEL).hasKey(DataAccesser.PLAYER_EXTENTION_LEVEL_POINT_ASINT)){
+                playerNbtTagCompound.getCompoundTag(DataAccesser.PLAYER_EXTENTION_LEVEL).setInteger(DataAccesser.PLAYER_EXTENTION_LEVEL_POINT_ASINT,Body.LEVELPOINT_DEFAULT);
+            }
+        }
+    }
 
 
 
@@ -65,6 +77,9 @@ public class DataAccesserIniter {
     private static NBTTagCompound intitLevelsAndSkillsPlayerExtentions(NBTTagCompound playerNbtTagCompound){
         //生命属性
         initLevelsAndSkillsPlayerExtentionsRootHeart(playerNbtTagCompound);
+        //升级要素
+        initLevelsAndSkillsPlayerExtentionsRootLevel(playerNbtTagCompound);
+        //属性
         initLevelsAndSkillsPlayerExtentionsRootAttr(playerNbtTagCompound);
 
         return playerNbtTagCompound;

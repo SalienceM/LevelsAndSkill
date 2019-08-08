@@ -23,10 +23,12 @@ public class DataAccesser {
     public static final String PLAYER_EXTENTION="LevelsAndSkill";
     public static final String PLAYER_EXTENTION_HEART="Heart";
     public static final String PLAYER_EXTENTION_ATTRIBUTE="Attribute";
+    public static final String PLAYER_EXTENTION_LEVEL="Level";
     public static final String PLAYER_EXTENTION_HEART_STATIC_ASFLOAT ="heart_static";
     public static final String PLAYER_EXTENTION_HEART_TEMP_ASFLOAT ="heart_temp";
     public static final String PLAYER_EXTENTION_HEART_REVERT_SPEED_ASFLOAT ="heart_revert_speed";
     public static final String PLAYER_EXTENTION_ATTR_STRENGTH_ASFLOAT ="attr_strength";
+    public static final String PLAYER_EXTENTION_LEVEL_POINT_ASINT="level_point";
 
     public static final String TRAITS="Traits";
 
@@ -47,6 +49,17 @@ public class DataAccesser {
     private static NBTTagCompound getRootAttribute(NBTTagCompound root){
         return root.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getCompoundTag(PLAYER_EXTENTION).getCompoundTag(PLAYER_EXTENTION_ATTRIBUTE);
     }
+
+    /**从playerRoot标签中获取Level 节点
+     *
+     * @param root
+     * @return
+     */
+    private static NBTTagCompound getRootLevel(NBTTagCompound root){
+        return root.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getCompoundTag(PLAYER_EXTENTION).getCompoundTag(PLAYER_EXTENTION_LEVEL);
+    }
+
+
 
     /**是否存在指定特性
      *
@@ -249,4 +262,19 @@ public class DataAccesser {
         float strength=nbtTagCompoundPlayerHeart.getFloat(PLAYER_EXTENTION_ATTR_STRENGTH_ASFLOAT);
         return strength;
     }
+
+    /**获取用户升级属性点
+     *
+     * @param playerNbtTagCompound
+     * @return
+     */
+    public static int getPlayerLevelPoint(NBTTagCompound playerNbtTagCompound){
+        NBTTagCompound nbtTagCompoundPlayerHeart=getRootLevel(playerNbtTagCompound);
+        if (nbtTagCompoundPlayerHeart.isEmpty())return Body.LEVELPOINT_DEFAULT;
+        //calculate
+        int levelPoint=nbtTagCompoundPlayerHeart.getInteger(PLAYER_EXTENTION_LEVEL_POINT_ASINT);
+        return levelPoint;
+    }
+
+
 }
