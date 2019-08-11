@@ -1,5 +1,6 @@
 package com.m31.minecraft.forge.levelsandskill.proxy;
 
+import com.m31.minecraft.forge.levelsandskill.events.PlayerEventBus;
 import com.m31.minecraft.forge.levelsandskill.gui.container.LevelsGuiLoader;
 import com.m31.minecraft.forge.levelsandskill.items.ItemRegister;
 import net.minecraft.entity.player.EntityPlayer;

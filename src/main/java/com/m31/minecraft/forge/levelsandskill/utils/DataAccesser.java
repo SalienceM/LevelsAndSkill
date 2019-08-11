@@ -29,6 +29,7 @@ public class DataAccesser {
     public static final String PLAYER_EXTENTION_HEART_REVERT_SPEED_ASFLOAT ="heart_revert_speed";
     public static final String PLAYER_EXTENTION_ATTR_STRENGTH_ASFLOAT ="attr_strength";
     public static final String PLAYER_EXTENTION_LEVEL_POINT_ASINT="level_point";
+    public static final String PLAYER_EXTENTION_LEVEL_ASINT="levels";
 
     public static final String TRAITS="Traits";
 
@@ -249,12 +250,7 @@ public class DataAccesser {
         return Optional.empty();
     }
     //======================================================
-    /**获取当前最大血量有效值
-     * =base+static+temp
-     *
-     * @param playerNbtTagCompound
-     * @return
-     */
+
     public static float getPlayerStength(NBTTagCompound playerNbtTagCompound){
         NBTTagCompound nbtTagCompoundPlayerHeart=getRootAttribute(playerNbtTagCompound);
         if (nbtTagCompoundPlayerHeart.isEmpty())return Body.ATTR_STRENGTH_DEFAULT;
@@ -262,6 +258,38 @@ public class DataAccesser {
         float strength=nbtTagCompoundPlayerHeart.getFloat(PLAYER_EXTENTION_ATTR_STRENGTH_ASFLOAT);
         return strength;
     }
+
+    /**获取玩家属性值
+     *
+     * @param playerNbtTagCompound
+     * @param attrName
+     * @return
+     */
+    public static int getPlayerAttr(NBTTagCompound playerNbtTagCompound,ATTR_TYPE attrName){
+        NBTTagCompound nbtTagCompoundPlayerHeart=getRootAttribute(playerNbtTagCompound);
+        if (nbtTagCompoundPlayerHeart.isEmpty())return Body.ATTR_DEFAULT;
+        //calculate
+        int target=nbtTagCompoundPlayerHeart.getInteger(attrName.untranslateName);
+        return target;
+    }
+
+    /**设置玩家属性值
+     *
+     * @param playerNbtTagCompound
+     * @param attrName
+     * @return
+     */
+    public static void setPlayerAttr(NBTTagCompound playerNbtTagCompound,ATTR_TYPE attrName,float attrValue){
+        NBTTagCompound nbtTagCompoundPlayerHeart=getRootAttribute(playerNbtTagCompound);
+        if (nbtTagCompoundPlayerHeart.isEmpty())return;
+        //calculate
+        float target=nbtTagCompoundPlayerHeart.getFloat(attrName.untranslateName);
+        nbtTagCompoundPlayerHeart.setFloat(attrName.untranslateName,attrValue);
+    }
+
+
+
+
 
     /**获取用户升级属性点
      *
@@ -275,6 +303,80 @@ public class DataAccesser {
         int levelPoint=nbtTagCompoundPlayerHeart.getInteger(PLAYER_EXTENTION_LEVEL_POINT_ASINT);
         return levelPoint;
     }
+
+    /**获取用户当前等级
+     *
+     * @param playerNbtTagCompound
+     * @return
+     */
+    public static int getPlayerLevels(NBTTagCompound playerNbtTagCompound){
+        NBTTagCompound nbtTagCompoundPlayerHeart=getRootLevel(playerNbtTagCompound);
+        if (nbtTagCompoundPlayerHeart.isEmpty())return Body.LEVELS_DEFAULT;
+        //calculate
+        int level=nbtTagCompoundPlayerHeart.getInteger(PLAYER_EXTENTION_LEVEL_ASINT);
+        return level;
+    }
+
+    /**设置用户当前等级
+     *
+     * @param playerNbtTagCompound
+     * @return
+     */
+    public static void setPlayerLevels(NBTTagCompound playerNbtTagCompound,int level){
+        NBTTagCompound nbtTagCompoundPlayerHeart=getRootLevel(playerNbtTagCompound);
+        if (nbtTagCompoundPlayerHeart.isEmpty())return;
+        //calculate
+        nbtTagCompoundPlayerHeart.setInteger(PLAYER_EXTENTION_LEVEL_ASINT,level);
+    }
+
+
+
+
+
+    /**设置用户升级属性点
+     *
+     * @param playerNbtTagCompound
+     * @param playerLevelPoint
+     */
+    public static void setPlayerLevelPoint(NBTTagCompound playerNbtTagCompound,int playerLevelPoint){
+        NBTTagCompound nbtTagCompoundPlayerHeart=getRootLevel(playerNbtTagCompound);
+        if (nbtTagCompoundPlayerHeart.isEmpty())return ;
+        //calculate
+        nbtTagCompoundPlayerHeart.setInteger(PLAYER_EXTENTION_LEVEL_POINT_ASINT,playerLevelPoint);
+    }
+
+
+    /**属性类型枚举
+     *
+     */
+    public static enum ATTR_TYPE{
+        STRENGTH("attr_strength")   //力量
+        ,AGILIE("attr_agilie")   //灵巧
+        ,KNOWLEDGE("attr_knowledge") //知识
+        ,TOUGHNESS("attr_toughness") //韧性
+        ,VIGOUR("attr_vigour")//活力
+        ;
+
+
+
+
+
+        private String untranslateName="default";
+
+        public String getUntranslateName() {
+            return untranslateName;
+        }
+
+        public void setUntranslateName(String untranslateName) {
+            this.untranslateName = untranslateName;
+        }
+
+        private ATTR_TYPE(String untranslateName){
+            this.untranslateName=untranslateName;
+        }
+    }
+
+
 
 
 }

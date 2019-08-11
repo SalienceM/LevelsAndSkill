@@ -20,6 +20,15 @@ public class TranslationUtil {
     public static String getModTranslateKeyBindString(String name){
         return LevelsAndSkill.MOD_ID+".keybind."+name;
     }
+    public static String gettFullModTranslateBtnString(String btnname){
+        String targetKey=
+         LevelsAndSkill.MOD_ID+".btn."+btnname;
+        return getTranslateKey(targetKey);
+    }
+
+
+
+
     public static String getFullModTranslateAttrName(String attrName){
         String targetKey=getModTranslateAttrName(attrName);
         return getTranslateKey(targetKey);
