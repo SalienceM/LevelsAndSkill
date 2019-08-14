@@ -48,16 +48,52 @@ public class PlayerEventBus {
         LogManager.getLogger(PlayerEventBus.class).info("玩家登陆,初始化属性要素");
         //初始化模组属性
         DataAccesserIniter.initRoot(((EntityPlayerMP)event.player).getEntityData(), (EntityPlayerMP) event.player);
+        //根据属性内容重置当前等级经验Capcity
+    }
+
+    @SubscribeEvent
+    public static void onPlayerGetXp(PlayerPickupXpEvent event){
+        int addExp=event.getOrb().getXpValue();
+        event.getOrb().xpValue=0;//不进行mc经验累积
+        //nbt经验累积
+        Optional<EntityPlayerMP> playerMP=DataAccesser.getPlayerMpFromEntityPlayer(event.getEntityPlayer(),true);
+        if(playerMP.isPresent()&& DataAccesser.isRemote()){
+            int allAddExp=addExp+DataAccesser.getPlayerLevelExp(playerMP.get().getEntityData());
+            int currentLevel=DataAccesser.getPlayerLevels(playerMP.get().getEntityData());
+            //计算升级和
+            while (allAddExp>=DataAccesser.getPlayerLevelsCap(currentLevel)){
+                allAddExp=allAddExp-DataAccesser.getPlayerLevelsCap(currentLevel);
+                currentLevel++;
+            }
+            //更新当前经验
+            DataAccesser.setPlayerLevelExp(playerMP.get().getEntityData(),allAddExp);
+            //升级处理
+            if(currentLevel>DataAccesser.getPlayerLevels(playerMP.get().getEntityData())){
+                //更新cap
+                DataAccesser.setPlayerLevelsCap(playerMP.get().getEntityData(),DataAccesser.getPlayerLevelsCap(currentLevel));
+                //更新等级
+                playerMP.get().experienceLevel=currentLevel;
+            }
+        }
     }
 
 
+
+
+
     @SubscribeEvent
-    public static void onPlayerLevelUp(PlayerLevelUpEvent event){
+    public static void onPlayerLevelChange(PlayerLevelUpEvent event){
         //1、数据同步
         DataAccesser.setPlayerLevels(event.getEntityPlayer().getEntityData(),event.getCurrentLevel());
-        DataAccesser.setPlayerLevelPoint(event.getEntityPlayer().getEntityData(),
-                DataAccesser.getPlayerLevelPoint(event.getEntityPlayer().getEntityData())+ Body.LEVELS_UP_POINT_PERLEVEL);
-        event.getEntityPlayer().sendMessage(new TextComponentString("congratulations you levelup!!!"));
+        if(event.getCurrentLevel()>event.getOldLevel()
+        &&event.getCurrentLevel()>DataAccesser.getPlayerMaxLevels(event.getEntityPlayer().getEntityData())){
+            //升级属性
+            DataAccesser.setPlayerLevelPoint(event.getEntityPlayer().getEntityData(),
+                    DataAccesser.getPlayerLevelPoint(event.getEntityPlayer().getEntityData())+ (Body.LEVELS_UP_POINT_PERLEVEL*(event.getCurrentLevel()-event.getOldLevel())));
+            //重置最大等级
+            DataAccesser.setPlayerMaxLevels(event.getEntityPlayer().getEntityData(),event.getCurrentLevel());
+            event.getEntityPlayer().sendMessage(new TextComponentString("congratulations you levelup!!!"));
+        }
     }
 
 
@@ -96,9 +132,9 @@ public class PlayerEventBus {
                     event.player.setHealth(tempHealthAfter);
                 }
             }
-            //==========================2、升级规则
+            //==========================2、等级变更规则
 //            FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask()
-            if(playerMP.get().experienceLevel>DataAccesser.getPlayerLevels(playerMP.get().getEntityData())){
+            if(playerMP.get().experienceLevel!=DataAccesser.getPlayerLevels(playerMP.get().getEntityData())){
                 //发布升级事件
                 PlayerLevelUpEvent playerLevelUpEvent=new PlayerLevelUpEvent(playerMP.get(),DataAccesser.getPlayerLevels(playerMP.get().getEntityData()),playerMP.get().experienceLevel);
                 MinecraftForge.EVENT_BUS.post(playerLevelUpEvent);

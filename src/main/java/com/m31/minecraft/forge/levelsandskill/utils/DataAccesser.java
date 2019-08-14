@@ -17,6 +17,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 public class DataAccesser {
@@ -29,7 +30,11 @@ public class DataAccesser {
     public static final String PLAYER_EXTENTION_HEART_REVERT_SPEED_ASFLOAT ="heart_revert_speed";
     public static final String PLAYER_EXTENTION_ATTR_STRENGTH_ASFLOAT ="attr_strength";
     public static final String PLAYER_EXTENTION_LEVEL_POINT_ASINT="level_point";
+    public static final String PLAYER_EXTENTION_LEVEL_CAP_ASINT="level_capcity";
+    public static final String PLAYER_EXTENTION_LEVEL_EXP_CURRENT_ASINT ="level_current_exp";
+
     public static final String PLAYER_EXTENTION_LEVEL_ASINT="levels";
+    public static final String PLAYER_EXTENTION_LEVEL_MAX_ASINT="levels_max";
 
     public static final String TRAITS="Traits";
 
@@ -244,6 +249,7 @@ public class DataAccesser {
                 LevelsAndSkill.proxy.registerFakePlayer();
                 MinecraftServer minecraftServer = ClientProxy.fakePlayer.server;
                 EntityPlayerMP entityPlayerMP=minecraftServer.getPlayerList().getPlayerByUsername(mc.player.connection.getGameProfile().getName());
+                if(null==entityPlayerMP)return Optional.empty();
                 return Optional.of(entityPlayerMP);
             }
         }else{}
@@ -304,6 +310,32 @@ public class DataAccesser {
         return levelPoint;
     }
 
+    /**获取用户升级属性点
+     *
+     * @param playerNbtTagCompound
+     * @return
+     */
+    public static int getPlayerLevelExp(NBTTagCompound playerNbtTagCompound){
+        NBTTagCompound nbtTagCompoundPlayerHeart=getRootLevel(playerNbtTagCompound);
+        if (nbtTagCompoundPlayerHeart.isEmpty())return Body.LEVELEXP_CURRENT_DEFAULT;
+        //calculate
+        int levelPoint=nbtTagCompoundPlayerHeart.getInteger(PLAYER_EXTENTION_LEVEL_EXP_CURRENT_ASINT);
+        return levelPoint;
+    }
+
+    /**获取用户升级属性点
+     *
+     * @param playerNbtTagCompound
+     * @return
+     */
+    public static void setPlayerLevelExp(NBTTagCompound playerNbtTagCompound,int newexp){
+        NBTTagCompound nbtTagCompoundPlayerHeart=getRootLevel(playerNbtTagCompound);
+        if (nbtTagCompoundPlayerHeart.isEmpty())return;
+        //calculate
+        nbtTagCompoundPlayerHeart.setInteger(PLAYER_EXTENTION_LEVEL_EXP_CURRENT_ASINT,newexp);
+    }
+
+
     /**获取用户当前等级
      *
      * @param playerNbtTagCompound
@@ -329,6 +361,65 @@ public class DataAccesser {
         nbtTagCompoundPlayerHeart.setInteger(PLAYER_EXTENTION_LEVEL_ASINT,level);
     }
 
+    /**获取用户当前等级
+     *
+     * @param playerNbtTagCompound
+     * @return
+     */
+    public static int getPlayerMaxLevels(NBTTagCompound playerNbtTagCompound){
+        NBTTagCompound nbtTagCompoundPlayerHeart=getRootLevel(playerNbtTagCompound);
+        if (nbtTagCompoundPlayerHeart.isEmpty())return Body.LEVELS_DEFAULT;
+        //calculate
+        int level=nbtTagCompoundPlayerHeart.getInteger(PLAYER_EXTENTION_LEVEL_MAX_ASINT);
+        return level;
+    }
+
+    /**设置用户当前等级
+     *
+     * @param playerNbtTagCompound
+     * @return
+     */
+    public static void setPlayerMaxLevels(NBTTagCompound playerNbtTagCompound,int level){
+        NBTTagCompound nbtTagCompoundPlayerHeart=getRootLevel(playerNbtTagCompound);
+        if (nbtTagCompoundPlayerHeart.isEmpty())return;
+        //calculate
+        nbtTagCompoundPlayerHeart.setInteger(PLAYER_EXTENTION_LEVEL_MAX_ASINT,level);
+    }
+
+
+
+
+
+
+
+
+    /**获取用户当前等级经验槽
+     *
+     * @return
+     */
+    public static int getPlayerLevelsCap(int level){
+        return getPlayerLevelCapcity(level,Body.LEVELS_BASECAP, Body.LEVELS_CAP_GROWTH);
+    }
+
+
+
+
+
+
+
+
+
+    /**设置用户当前经验槽
+     *
+     * @param playerNbtTagCompound
+     * @param cap
+     */
+    public static void setPlayerLevelsCap(NBTTagCompound playerNbtTagCompound,int cap){
+        NBTTagCompound nbtTagCompoundPlayerHeart=getRootLevel(playerNbtTagCompound);
+        if (nbtTagCompoundPlayerHeart.isEmpty())return ;
+        //calculate
+        nbtTagCompoundPlayerHeart.setInteger(PLAYER_EXTENTION_LEVEL_CAP_ASINT,cap);
+    }
 
 
 
@@ -375,6 +466,36 @@ public class DataAccesser {
             this.untranslateName=untranslateName;
         }
     }
+
+    /**获取当前等级Cap
+     *
+     * @param currentLevel
+     * @param baseLevelCapcity
+     * @param growth
+     * @return
+     */
+    public static int getPlayerLevelCapcity(int currentLevel,int baseLevelCapcity,float growth){
+        if(0==currentLevel)return baseLevelCapcity;
+        int total=0;
+        for( int i=0;i<currentLevel;i++){
+            if(0==total){
+                total=baseLevelCapcity;
+            }else{
+                total=new BigDecimal(total*(1+growth)).setScale(0,BigDecimal.ROUND_FLOOR).intValue();
+            }
+        }
+        return total;
+    }
+
+    /**是否为远程对象
+     *
+     * @return
+     */
+    public static boolean isRemote(){
+        return Minecraft.getMinecraft().world.isRemote;
+    }
+
+
 
 
 

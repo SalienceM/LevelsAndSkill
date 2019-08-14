@@ -1,7 +1,6 @@
 package com.m31.minecraft.forge.levelsandskill.utils;
 
 import com.google.gson.Gson;
-import com.m31.minecraft.forge.levelsandskill.events.PlayerEventBus;
 import com.m31.minecraft.forge.levelsandskill.items.Body;
 import com.m31.minecraft.forge.levelsandskill.items.heart.Heart;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -77,10 +76,16 @@ public class DataAccesserIniter {
     private static void initLevelsAndSkillsPlayerExtentionsRootLevel(NBTTagCompound playerNbtTagCompound, EntityPlayerMP player){
         if(playerNbtTagCompound.getCompoundTag(DataAccesser.PLAYER_EXTENTION_LEVEL).isEmpty()){
             NBTTagCompound nbtTagCompoundPlayerHeartBuild=new NBTTagCompound();
-            //LEVEL POINT
+            //LEVEL POINT TOTAL
             nbtTagCompoundPlayerHeartBuild.setInteger(DataAccesser.PLAYER_EXTENTION_LEVEL_POINT_ASINT, Body.LEVELPOINT_DEFAULT);
             //LEVEL
             nbtTagCompoundPlayerHeartBuild.setInteger(DataAccesser.PLAYER_EXTENTION_LEVEL_ASINT, player.experienceLevel);
+            //LEVELMAX
+            nbtTagCompoundPlayerHeartBuild.setInteger(DataAccesser.PLAYER_EXTENTION_LEVEL_MAX_ASINT, player.experienceLevel);
+            //LEVELCurrentLevelCAP
+            nbtTagCompoundPlayerHeartBuild.setInteger(DataAccesser.PLAYER_EXTENTION_LEVEL_CAP_ASINT, DataAccesser.getPlayerLevelCapcity(player.experienceLevel,Body.LEVELS_BASECAP,Body.LEVELS_CAP_GROWTH));
+            //level point current
+            nbtTagCompoundPlayerHeartBuild.setInteger(DataAccesser.PLAYER_EXTENTION_LEVEL_EXP_CURRENT_ASINT, Body.LEVELEXP_CURRENT_DEFAULT);
             playerNbtTagCompound.setTag(DataAccesser.PLAYER_EXTENTION_LEVEL,nbtTagCompoundPlayerHeartBuild);
         }else{
             if(!playerNbtTagCompound.getCompoundTag(DataAccesser.PLAYER_EXTENTION_LEVEL).hasKey(DataAccesser.PLAYER_EXTENTION_LEVEL_POINT_ASINT)){
@@ -88,6 +93,15 @@ public class DataAccesserIniter {
             }
             if(!playerNbtTagCompound.getCompoundTag(DataAccesser.PLAYER_EXTENTION_LEVEL).hasKey(DataAccesser.PLAYER_EXTENTION_LEVEL_ASINT)){
                 playerNbtTagCompound.getCompoundTag(DataAccesser.PLAYER_EXTENTION_LEVEL).setInteger(DataAccesser.PLAYER_EXTENTION_LEVEL_ASINT,player.experienceLevel);
+            }
+            if(!playerNbtTagCompound.getCompoundTag(DataAccesser.PLAYER_EXTENTION_LEVEL).hasKey(DataAccesser.PLAYER_EXTENTION_LEVEL_MAX_ASINT)){
+                playerNbtTagCompound.getCompoundTag(DataAccesser.PLAYER_EXTENTION_LEVEL).setInteger(DataAccesser.PLAYER_EXTENTION_LEVEL_MAX_ASINT,player.experienceLevel);
+            }
+            if(!playerNbtTagCompound.getCompoundTag(DataAccesser.PLAYER_EXTENTION_LEVEL).hasKey(DataAccesser.PLAYER_EXTENTION_LEVEL_CAP_ASINT)){
+                playerNbtTagCompound.getCompoundTag(DataAccesser.PLAYER_EXTENTION_LEVEL).setInteger(DataAccesser.PLAYER_EXTENTION_LEVEL_CAP_ASINT,DataAccesser.getPlayerLevelCapcity(player.experienceLevel,Body.LEVELS_BASECAP,Body.LEVELS_CAP_GROWTH));
+            }
+            if(!playerNbtTagCompound.getCompoundTag(DataAccesser.PLAYER_EXTENTION_LEVEL).hasKey(DataAccesser.PLAYER_EXTENTION_LEVEL_EXP_CURRENT_ASINT)){
+                playerNbtTagCompound.getCompoundTag(DataAccesser.PLAYER_EXTENTION_LEVEL).setInteger(DataAccesser.PLAYER_EXTENTION_LEVEL_EXP_CURRENT_ASINT,Body.LEVELEXP_CURRENT_DEFAULT);
             }
         }
     }

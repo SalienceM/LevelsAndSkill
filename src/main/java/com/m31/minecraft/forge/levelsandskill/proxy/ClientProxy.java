@@ -5,6 +5,7 @@ import com.m31.minecraft.forge.levelsandskill.gui.LevelsGui;
 import com.m31.minecraft.forge.levelsandskill.gui.SimpleGui;
 import com.m31.minecraft.forge.levelsandskill.items.ItemRegister;
 import com.m31.minecraft.forge.levelsandskill.items.skills.SkillBook;
+import com.m31.minecraft.forge.levelsandskill.utils.DataAccesser;
 import com.m31.minecraft.forge.levelsandskill.utils.TranslationUtil;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
@@ -31,6 +32,9 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.input.Keyboard;
+
+import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.UUID;
 
 public class ClientProxy extends CommonProxy{
@@ -151,6 +155,40 @@ public class ClientProxy extends CommonProxy{
                         String hp = "Health: "+MathHelper.ceil(hpper*100)+"% "+String.format("%d/%d",currenthp,maxhp);
                         FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
                         fontRenderer.drawStringWithShadow(hp, width / 2 - 91, height - GuiIngameForge.left_height-20, 0xFFFFFF);
+            Minecraft.getMinecraft().renderEngine.bindTexture(Gui.ICONS);
+        //渲染经验条
+        }else if(event.getType()== RenderGameOverlayEvent.ElementType.EXPERIENCE
+        &&!Minecraft.getMinecraft().player.isCreative()){
+            event.setCanceled(true);//阻止原有渲染
+            int width=event.getResolution().getScaledWidth();
+            int height=event.getResolution().getScaledHeight();
+            GlStateManager.color(1f,1f,1f);
+            Minecraft.getMinecraft().getTextureManager().bindTexture(gui_texture);
+            //经验条
+            //外框
+            Minecraft.getMinecraft().ingameGUI.drawTexturedModalRect(width/2-91,height - GuiIngameForge.left_height+20,
+                    0,46,182,3);
+            //实体
+            int totallength=180;
+            int level=Minecraft.getMinecraft().player.experienceLevel;
+            Optional<EntityPlayerMP> entityPlayerMP=DataAccesser.getPlayerMpFromEntityPlayer(Minecraft.getMinecraft().player,false);
+            if(entityPlayerMP.isPresent()){
+                int playerLevel=DataAccesser.getPlayerLevels(entityPlayerMP.get().getEntityData());
+                float dou=(float)DataAccesser.getPlayerLevelExp(entityPlayerMP.get().getEntityData())/DataAccesser.getPlayerLevelsCap(playerLevel);
+                totallength=new BigDecimal(totallength*dou).setScale(0,BigDecimal.ROUND_FLOOR).intValue();
+                level=playerLevel;
+                if(totallength>180){
+                    totallength=180;
+                }
+            }
+            //实际百分比
+            Minecraft.getMinecraft().ingameGUI.drawTexturedModalRect(width/2-90,height - GuiIngameForge.left_height+21,
+                    1,43,totallength,1);
+            //等级
+            FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+            fontRenderer.drawStringWithShadow(level+"", width / 2, height - GuiIngameForge.left_height+18, 0xFFFFFF);
+
+
             Minecraft.getMinecraft().renderEngine.bindTexture(Gui.ICONS);
         }
     }
