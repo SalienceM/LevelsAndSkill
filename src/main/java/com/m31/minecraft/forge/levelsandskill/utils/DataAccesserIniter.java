@@ -32,7 +32,7 @@ public class DataAccesserIniter {
         if(playerNbtTagCompound.getCompoundTag(DataAccesser.PLAYER_EXTENTION_HEART).isEmpty()){
             NBTTagCompound nbtTagCompoundPlayerHeartBuild=new NBTTagCompound();
             //maxHeart
-            nbtTagCompoundPlayerHeartBuild.setFloat(DataAccesser.PLAYER_EXTENTION_HEART_STATIC_ASFLOAT, Heart.BaseHealth);
+            nbtTagCompoundPlayerHeartBuild.setFloat(DataAccesser.PLAYER_EXTENTION_HEART_STATIC_ASFLOAT, 0f);
             //maxTemp
             nbtTagCompoundPlayerHeartBuild.setFloat(DataAccesser.PLAYER_EXTENTION_HEART_TEMP_ASFLOAT,0f);
             //revertHeart
@@ -40,7 +40,7 @@ public class DataAccesserIniter {
             playerNbtTagCompound.setTag(DataAccesser.PLAYER_EXTENTION_HEART,nbtTagCompoundPlayerHeartBuild);
         }else{
             if(!playerNbtTagCompound.getCompoundTag(DataAccesser.PLAYER_EXTENTION_HEART).hasKey(DataAccesser.PLAYER_EXTENTION_HEART_STATIC_ASFLOAT)){
-                playerNbtTagCompound.getCompoundTag(DataAccesser.PLAYER_EXTENTION_HEART).setFloat(DataAccesser.PLAYER_EXTENTION_HEART_STATIC_ASFLOAT,Heart.BaseHealth);
+                playerNbtTagCompound.getCompoundTag(DataAccesser.PLAYER_EXTENTION_HEART).setFloat(DataAccesser.PLAYER_EXTENTION_HEART_STATIC_ASFLOAT,0f);
             }
             if(!playerNbtTagCompound.getCompoundTag(DataAccesser.PLAYER_EXTENTION_HEART).hasKey(DataAccesser.PLAYER_EXTENTION_HEART_TEMP_ASFLOAT)){
                 playerNbtTagCompound.getCompoundTag(DataAccesser.PLAYER_EXTENTION_HEART).setFloat(DataAccesser.PLAYER_EXTENTION_HEART_TEMP_ASFLOAT,0f);

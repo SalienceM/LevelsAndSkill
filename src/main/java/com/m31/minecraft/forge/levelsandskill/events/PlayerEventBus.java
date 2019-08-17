@@ -73,6 +73,7 @@ public class PlayerEventBus {
                 DataAccesser.setPlayerLevelsCap(playerMP.get().getEntityData(),DataAccesser.getPlayerLevelsCap(currentLevel));
                 //更新等级
                 playerMP.get().experienceLevel=currentLevel;
+                playerMP.get().experienceTotal+=addExp;
             }
         }
     }
